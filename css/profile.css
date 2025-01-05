@@ -1,0 +1,366 @@
+/* Reset mặc định */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 420px;
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Header Section */
+.profile-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-icon {
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.header-icon:hover {
+    color: #f0e1f8;
+}
+
+.profile-header {
+    background: linear-gradient(to bottom, #d48dd5, #f8c7f8);
+    padding: 20px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0 0 20px 20px;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+}
+
+.profile-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 15px;
+    border: 2px solid white;
+}
+
+.username {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.vip-status {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.vip-status img {
+    width: 18px;
+    margin-right: 5px;
+}
+
+.profile-icons img {
+    width: 24px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+/* Actions Section */
+.profile-actions {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0e1f8;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #7c4dff;
+    cursor: pointer;
+    gap: 8px;
+}
+
+.action-btn img {
+    width: 20px;
+}
+
+.action-btn:hover {
+    background: #e5d2f5;
+}
+
+/* Points Section */
+.profile-points {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.point-item {
+    text-align: center;
+}
+
+.point-item h3 {
+    font-size: 24px;
+    color: #444;
+}
+
+.point-item p {
+    font-size: 14px;
+    color: #666;
+}
+
+.refresh-btn {
+    background: none;
+    border: none;
+    color: #d48dd5;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* Links Section */
+.profile-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 20px;
+    padding: 10px;
+}
+
+.link-item {
+    display: flex;
+    align-items: center;
+    background: #f0f0f0;
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.link-item:hover {
+    background: #e0e0e0;
+    transform: scale(1.03);
+}
+
+.link-item img {
+    width: 32px;
+    height: 32px;
+    margin-right: 15px;
+}
+
+.link-item p {
+    font-size: 14px;
+    color: #555;
+    font-weight: bold;
+}
+
+/* Tab Bar */
+.navigation-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    background: white;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.nav-item {
+    text-align: center;
+    font-size: 12px;
+    color: #7c4dff;
+}
+
+.nav-item img {
+    width: 24px;
+    margin-bottom: 5px;
+}
+
+.nav-item.active {
+    color: #d48dd5;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-links {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .link-item {
+        padding: 14px;
+    }
+
+    .link-item img {
+        width: 28px;
+        height: 28px;
+    }
+
+    .link-item p {
+        font-size: 12px;
+    }
+
+    .action-btn {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .point-item h3 {
+        font-size: 20px;
+    }
+
+    .point-item p {
+        font-size: 12px;
+    }
+}
+/******/
+.update-profile-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.update-profile-container h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.avatar-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    background: #7c4dff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background: #6b3de0;
+}
+
+.success {
+    color: green;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* CSS cho popup */
+.modal {
+    display: none; /* Ẩn mặc định */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.btn-confirm {
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.error-text {
+    color: red;
+    font-weight: bold;
+}

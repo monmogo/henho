@@ -1,0 +1,14 @@
+# Bật chế độ rewrite
+RewriteEngine On
+
+# Đảm bảo index.php là file chính
+DirectoryIndex index.php
+
+# Chuyển hướng tất cả các request không phải file/thư mục có thật đến index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]
+
+# Bật hiển thị lỗi PHP (cho debug)
+php_flag display_errors On
+php_value error_reporting 32767

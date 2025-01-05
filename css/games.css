@@ -1,0 +1,248 @@
+/* === MAIN CONTENT === */
+.main-content {
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin-left: 260px; /* Để tránh bị che bởi sidebar */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Căn giữa theo chiều ngang */
+    justify-content: center; /* Căn giữa theo chiều dọc */
+}
+
+/* === HEADER === */
+h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #6a11cb;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* === SEARCH & BUTTON === */
+#searchGame {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.btn-success {
+    background: linear-gradient(45deg, #4CAF50, #2E7D32);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-success:hover {
+    background: linear-gradient(45deg, #43A047, #1B5E20);
+}
+
+/* === TABLE CONTAINER === */
+.table-container {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.thead-dark th {
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    color: white;
+    text-align: center;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+td img.game-cover {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+/* === GAME LIST === */
+.game-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 800px; /* Giới hạn chiều rộng tối đa */
+    margin: 20px auto;
+}
+
+.game-card {
+    width: 150px;
+    text-align: center;
+    border-radius: 10px;
+    padding: 10px;
+    background: white;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.game-card:hover {
+    transform: scale(1.05);
+}
+
+.game-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.game-title {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* === BUTTONS === */
+.btn-sm {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+}
+
+.btn-primary {
+    background: #007bff;
+    border: none;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn-danger {
+    background: #dc3545;
+    border: none;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-danger:hover {
+    background: #a71d2a;
+}
+
+/* === MODAL FORM === */
+.modal-content {
+    border-radius: 8px;
+}
+
+.modal-header {
+    background: #6a11cb;
+    color: white;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* === SIDEBAR === */
+.navi {
+    background-color: #343a40;
+    padding: 20px 0;
+    height: 100vh;
+    position: fixed;
+    width: 240px;
+    overflow: hidden;
+}
+
+.navi ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navi ul li {
+    margin: 15px 0;
+}
+
+.navi ul li a {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.navi ul li a i {
+    margin-right: 15px;
+    font-size: 18px;
+}
+
+.navi ul li a span {
+    display: inline-block;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+
+.navi ul li a:hover {
+    background-color: #495057;
+    color: #ffc107;
+}
+
+.navi ul li.active a {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* === RESPONSIVE - MOBILE === */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .game-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .table-container {
+        overflow-x: scroll;
+    }
+
+    .navi {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .navi ul {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .navi ul li {
+        margin: 0;
+    }
+
+    .navi ul li a {
+        padding: 10px;
+        font-size: 14px;
+    }
+}

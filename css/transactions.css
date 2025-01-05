@@ -1,0 +1,231 @@
+
+/* Reset và cấu hình cơ bản */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+ /* Thêm CSS tùy chỉnh */
+ .status-pending {
+    color: #ff9800;
+    font-weight: bold;
+}
+.status-approved {
+    color: #28a745;
+    font-weight: bold;
+}
+.status-rejected {
+    color: #dc3545;
+    font-weight: bold;
+}
+.table thead {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+}
+.btn-sm {
+    margin-right: 5px;
+}
+.navi {
+    background-color: #343a40;
+    padding: 20px 0;
+    height: 100vh;
+    position: fixed;
+    width: 240px;
+    overflow: hidden;
+}
+
+.navi ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navi ul li {
+    margin: 15px 0;
+}
+
+.navi ul li a {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.navi ul li a i {
+    margin-right: 15px;
+    font-size: 18px;
+}
+
+.navi ul li a span {
+    display: inline-block;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+
+.navi ul li a:hover {
+    background-color: #495057;
+    color: #ffc107;
+}
+
+.navi ul li.active a {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+}
+
+.container {
+    margin-left: 260px;
+    padding: 20px;
+    width: calc(100% - 260px);
+}
+
+@media (max-width: 768px) {
+    .navi {
+        position: relative;
+        height: auto;
+        width: 100%;
+    }
+
+    .navi ul li a {
+        justify-content: center;
+    }
+
+    .navi ul li a span {
+        display: none;
+    }
+
+    .container {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table thead th {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.table tbody tr td {
+    padding: 10px;
+}
+#searchUser {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+
+
+
+/* ========================= */
+/* Tùy chỉnh dropdown tìm kiếm */
+/* ========================= */
+/* Dropdown tìm kiếm */
+.autocomplete-dropdown {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    width: 15%; /* Điều chỉnh để vừa với ô nhập */
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    margin-top: 5px;
+    display: none; /* Mặc định ẩn */
+}
+
+/* Mục trong dropdown */
+.autocomplete-item {
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+/* Hiệu ứng hover */
+.autocomplete-item:hover {
+    background: #007bff;
+    color: white;
+}
+
+/* Ẩn viền cuối cùng */
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+/* Đảm bảo dropdown hiển thị đúng dưới ô nhập */
+.search-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+/* Cải tiến bảng lịch sử nạp điểm */
+#historyTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+#historyTable thead {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+}
+
+#historyTable th, #historyTable td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+#historyTable tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: all 0.2s ease-in-out;
+}
+.pagination-container {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.pagination-container button {
+    margin: 5px;
+    padding: 8px 12px;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.pagination-container button:hover {
+    background: #0056b3;
+}
+
+.current-page {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 10px;
+    color: #333;
+}

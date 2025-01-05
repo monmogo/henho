@@ -1,0 +1,160 @@
+/* Tổng thể */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+h2 {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Grid danh sách games */
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    max-width: 900px;
+    margin: auto;
+}
+
+/* Card game */
+.game-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.game-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Ảnh game */
+.game-image {
+    width: 80%;
+    height: 140px;
+    object-fit: cover;
+}
+
+/* Tên game */
+.game-title {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    background-color: #E35D93;
+    color: white;
+}
+
+/* Sidebar */
+.sidebar {
+    background: white;
+    border-right: 1px solid #ddd;
+    padding: 15px;
+    height: 100vh;
+    position: fixed;
+    left: -250px;
+    top: 0;
+    width: 250px;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Sidebar nút đóng */
+.close-sidebar {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #ff4d4d;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+}
+
+/* Sidebar links */
+.sidebar .nav-link {
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+    border-radius: 5px;
+}
+
+.sidebar .nav-link:hover {
+    background: #E35D93;
+    color: white;
+}
+
+/* Mobile Navbar */
+.mobile-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #A742B9;
+    color: white;
+    padding: 10px;
+}
+
+.mobile-nav button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+/* Responsive tối ưu */
+@media (max-width: 768px) {
+    /* Hiển thị 2 cột trên điện thoại */
+    .game-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .game-card {
+        max-width: 100%;
+    }
+
+    .game-image {
+        height: 120px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* Hiển thị 3 cột trên máy tính bảng */
+    .game-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .game-image {
+        height: 140px;
+    }
+}
+
+@media (min-width: 1024px) {
+    /* Hiển thị 4 cột trên màn hình lớn */
+    .game-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .game-image {
+        height: 140px;
+    }
+}

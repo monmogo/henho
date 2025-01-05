@@ -1,0 +1,187 @@
+/* === RESET CƠ BẢN === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: Arial, sans-serif;
+  width: 100%;
+  height: 100%;
+  background-color: #f8f8f8;
+  overflow-x: hidden;
+}
+
+/* === HEADER BANNER === */
+
+
+/* === THÔNG BÁO === */
+.notification {
+  background-color: #fff3e0;
+  padding: 10px;
+  border-bottom: 1px solid #f0d9bf;
+  color: #7c4d00;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* === SECTION BÌNH CHỌN === */
+/* Điều chỉnh khoảng cách giữa 2 danh sách */
+.interaction-section {
+  margin-top:10px;
+  margin-bottom: 5px; /* Giảm khoảng cách giữa các phần */
+  padding-bottom: 5px;
+}
+
+/* Tiêu đề phần danh sách */
+.section-title {
+  font-size: 14px; /* Giảm kích thước chữ */
+  font-weight: bold;
+  color: #a64ca6;
+  text-align: left;
+  margin-bottom: 5px; /* Giảm khoảng cách dưới */
+}
+
+/* Giảm padding bên trong mỗi mục */
+.interaction-item {
+  padding: 5px;
+  width: 90px; /* Thu nhỏ kích thước ô game */
+}
+
+/* Hình ảnh trong mục */
+.interaction-item img {
+  width: 50px;
+  height: 50px;
+}
+
+/* Giảm kích thước chữ của tiêu đề game */
+.interaction-item span {
+  font-size: 12px;
+}
+
+/* === DANH SÁCH VOTE === */
+/* Phần chứa danh sách game */
+.interaction-slider {
+  overflow-x: auto; /* Cho phép cuộn ngang */
+  white-space: nowrap; /* Không xuống dòng */
+  padding: 10px 0;
+  scrollbar-width: none; /* Ẩn scrollbar trên Firefox */
+}
+
+.interaction-slider::-webkit-scrollbar {
+  display: none; /* Ẩn scrollbar trên Chrome */
+}
+
+/* Danh sách game dạng ngang */
+.interaction-list {
+  display: flex;
+  gap: 15px; /* Khoảng cách giữa các game */
+  padding: 10px;
+}
+
+/* Từng item game */
+.interaction-item {
+  flex: 0 0 auto; /* Giữ nguyên kích thước, không bị co lại */
+  width: 120px; /* Độ rộng cố định */
+  text-align: center;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.interaction-item:hover {
+  transform: scale(1.05);
+}
+
+/* Hình ảnh game */
+.interaction-item img {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+/* Tên game */
+/* Loại bỏ gạch chân trong thẻ <span> */
+.interaction-item span {
+  text-decoration: none !important; /* Không có gạch chân */
+  font-size: 12px; /* Giảm chữ */
+  display: block; /* Đảm bảo căn chỉnh đúng */
+  color: #444; /* Màu chữ tối */
+}
+
+/* Nếu <span> đang nằm trong thẻ <a>, cần bỏ gạch chân */
+.interaction-item a {
+  text-decoration: none !important;
+  color: inherit; /* Giữ màu chữ mặc định */
+}
+
+
+
+/* === RESPONSIVE FIXES === */
+@media (max-width: 768px) {
+  .interaction-list {
+      grid-template-columns: repeat(2, 1fr);
+  }
+
+  .interaction-item img {
+      width: 60px;
+      height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .interaction-list {
+      grid-template-columns: repeat(2, 1fr);
+  }
+
+  .interaction-item img {
+      width: 80%;
+      height: 80%;
+  }
+}
+/* === Danh sách phim (Grid) === */
+/* Lưới hiển thị phim */
+/* === Danh sách phim (Grid) - Hiển thị 2 cột === */
+.movie-grid {
+  display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 10px;
+}
+
+/* Movie Item */
+.movie-card {
+  background: white;
+  padding: 5px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+
+/* Movie Image */
+.movie-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+.movie-info {
+  padding: 5px;
+  background: #e0e0e0;
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+}
+
+
+ 
+
+/* === Cuộn xuống để xem danh sách phim === */
+body {
+  overflow-y: auto; /* Cho phép cuộn xuống */
+}
