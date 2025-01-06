@@ -4,6 +4,11 @@ RewriteEngine On
 # Đảm bảo index.php là file chính
 DirectoryIndex index.php
 
+RewriteEngine On
+RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK) [NC]
+RewriteRule .* - [F]
+
+
 # Chuyển hướng tất cả các request không phải file/thư mục có thật đến index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

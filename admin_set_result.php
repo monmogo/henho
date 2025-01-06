@@ -14,43 +14,43 @@ $admin_id = $_SESSION['admin_id'];
 $query_games = $conn->query("SELECT id, name FROM vote_games ORDER BY created_at DESC");
 $games = $query_games ? $query_games->fetch_all(MYSQLI_ASSOC) : [];
 
-
 // Xử lý POST request
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    die(json_encode([
-        "status" => "error",
-        "message" => "Phương thức không hợp lệ.",
-        "debug" => $_SERVER['REQUEST_METHOD']
-    ]));
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['game_id'], $_POST['round_number'], $_POST['correct_choice'])) {
+        die(json_encode(["status" => "error", "message" => "Thiếu dữ liệu đầu vào."]));
+    }
 
-// Kiểm tra dữ liệu đầu vào
-if (empty($_POST)) {
-    die(json_encode([
-        "status" => "error",
-        "message" => "Dữ liệu không được gửi hoặc bị chặn.",
-        "debug" => $_POST
-    ]));
-}
+    $game_id = intval($_POST['game_id']);
+    $round_number = intval($_POST['round_number']);
+    $correct_choice = $_POST['correct_choice'];
 
-// Kiểm tra nếu Admin đã đặt kết quả
-$check = $conn->prepare("SELECT id FROM admin_controls WHERE game_id = ? AND round_number = ?");
-$check->bind_param("ii", $_POST['game_id'], $_POST['round_number']);
-$check->execute();
-$res = $check->get_result();
+    // Kiểm tra giá trị hợp lệ
+    if (!in_array($correct_choice, ['A', 'B', 'C', 'D'])) {
+        die(json_encode(["status" => "error", "message" => "Lựa chọn không hợp lệ."]));
+    }
 
-if ($res->num_rows > 0) {
-    die(json_encode(["status" => "error", "message" => "Kết quả đã tồn tại."]));
-}
+    // Kiểm tra nếu kết quả đã tồn tại
+    $check = $conn->prepare("SELECT id FROM admin_controls WHERE game_id = ? AND round_number = ?");
+    $check->bind_param("ii", $game_id, $round_number);
+    $check->execute();
+    $res = $check->get_result();
 
-// Lưu kết quả vào bảng `admin_controls`
-$query = $conn->prepare("INSERT INTO admin_controls (game_id, round_number, correct_choice, admin_id, created_at) VALUES (?, ?, ?, ?, NOW())");
-$query->bind_param("iisi", $_POST['game_id'], $_POST['round_number'], $_POST['correct_choice'], $_SESSION['admin_id']);
+    if ($res->num_rows > 0) {
+        // Nếu đã tồn tại, cập nhật kết quả
+        $query = $conn->prepare("UPDATE admin_controls SET correct_choice = ?, admin_id = ?, created_at = NOW() WHERE game_id = ? AND round_number = ?");
+        $query->bind_param("siii", $correct_choice, $admin_id, $game_id, $round_number);
+    } else {
+        // Nếu chưa tồn tại, thêm mới
+        $query = $conn->prepare("INSERT INTO admin_controls (game_id, round_number, correct_choice, admin_id, created_at) VALUES (?, ?, ?, ?, NOW())");
+        $query->bind_param("iisi", $game_id, $round_number, $correct_choice, $admin_id);
+    }
 
-if ($query->execute()) {
-    echo json_encode(["status" => "success", "message" => "Kết quả đã được cập nhật."]);
-} else {
-    echo json_encode(["status" => "error", "message" => "Lỗi khi cập nhật kết quả: " . $query->error]);
+    if ($query->execute()) {
+        echo json_encode(["status" => "success", "message" => "Kết quả đã được cập nhật."]);
+    } else {
+        echo json_encode(["status" => "error", "message" => "Lỗi khi cập nhật kết quả: " . $query->error]);
+    }
+    exit;
 }
 
 // Lấy lịch sử kết quả để hiển thị
