@@ -1,45 +1,38 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
+// process_vote.php - Xử lý kết quả sau 120 giây
+include 'config.db.php'; // Kết nối database
 session_start();
-require_once 'config.db.php';
 
-// Lấy danh sách các vote cần xử lý (sau 120 giây)
-$sql = "SELECT * FROM vote_submissions WHERE TIMESTAMPDIFF(SECOND, created_at, NOW()) >= 120";
-$result = $conn->query($sql);
+$game_id = intval($_POST['game_id']);
 
-while ($row = $result->fetch_assoc()) {
-    $user_id = $row['user_id'];
-    $game_id = $row['game_id'];
-    $choices = explode(",", $row['choice']);
-    $bet_amount = $row['bet_amount'];
+// Đợi 120 giây trước khi xử lý kết quả
+sleep(120);
 
-    // Lấy đáp án đúng từ session hoặc admin đặt trước
-    $sql = "SELECT correct_choice FROM admin_controls WHERE game_id = ? ORDER BY created_at DESC LIMIT 1";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $game_id);
-    $stmt->execute();
-    $correct_data = $stmt->get_result()->fetch_assoc();
-    $correct_choice = $correct_data['correct_choice'] ?? null;
+// Kiểm tra nếu Admin đã đặt kết quả
+$check = $conn->prepare("SELECT correct_choice FROM admin_controls WHERE game_id = ? ORDER BY created_at DESC LIMIT 1");
+$check->bind_param("i", $_POST['game_id']);
+$check->execute();
+$res = $check->get_result();
+$row = $res->fetch_assoc();
 
-    // Xử lý kết quả
-    $result = in_array($correct_choice, $choices) ? "Thắng" : "Thua";
-    $profit = ($result === "Thắng") ? $bet_amount * 2 : -$bet_amount;
-
-    // Cập nhật điểm user
-    $sql = "UPDATE users SET points = points + ? WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $profit, $user_id);
-    $stmt->execute();
-
-    // Lưu vào bảng vote_results
-    $sql = "INSERT INTO vote_results (user_id, game_id, choice, bet_amount, correct_choice, result, profit) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iissssi", $user_id, $game_id, implode(",", $choices), $bet_amount, $correct_choice, $result, $profit);
-    $stmt->execute();
+// Nếu Admin chưa đặt kết quả, chọn ngẫu nhiên
+if (!$row) {
+    $choices = ['A', 'B', 'C', 'D'];
+    $correct_choice = $choices[array_rand($choices)];
+} else {
+    $correct_choice = $row['correct_choice'];
 }
 
-echo "Xử lý xong!";
+// Cập nhật kết quả vào `vote_results`
+$update = $conn->prepare("UPDATE vote_results SET correct_choice = ?, result = IF(choice = ?, 'Thắng', 'Thua') WHERE game_id = ?");
+$update->bind_param("ssi", $correct_choice, $correct_choice, $_POST['game_id']);
+$update->execute();
+
+
+// Cập nhật điểm số người chơi
+$update_users = $conn->prepare("UPDATE users u JOIN vote_results vr ON u.id = vr.user_id SET u.points = u.points + vr.profit WHERE vr.game_id = ?");
+$update_users->bind_param("i", $game_id);
+$update_users->execute();
+
+echo json_encode(["status" => "success", "message" => "Kết quả đã được công bố."]);
 ?>

@@ -1,24 +1,31 @@
 <?php
+// history.php - Hiển thị lịch sử cược của người chơi
+include 'config.db.php'; // Kết nối database
 session_start();
-require_once 'config.db.php';
 
 if (!isset($_SESSION['user_id'])) {
-    die("Bạn chưa đăng nhập!");
+    die(json_encode(["status" => "error", "message" => "Bạn cần đăng nhập để xem lịch sử."]));
 }
 
 $user_id = $_SESSION['user_id'];
 
-$sql = "SELECT vg.name AS game_name, vr.round_number, vr.choice, vr.bet_amount, vr.correct_choice, vr.result, vr.profit 
-        FROM vote_results vr
-        JOIN vote_games vg ON vr.game_id = vg.id
-        WHERE vr.user_id = ?
-        ORDER BY vr.round_number DESC";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$history = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-?>
+// Truy vấn lịch sử cược
+$query = $conn->prepare("SELECT vr.id, vg.name AS game_name, vr.choice, vr.correct_choice, vr.bet_amount, vr.result, vr.profit, vr.created_at
+                          FROM vote_results vr
+                          JOIN vote_games vg ON vr.game_id = vg.id
+                          WHERE vr.user_id = ?
+                          ORDER BY vr.created_at DESC");
+$query->bind_param("i", $user_id);
+$query->execute();
+$result = $query->get_result();
 
+$history = [];
+while ($row = $result->fetch_assoc()) {
+    $history[] = $row;
+}
+
+echo json_encode(["status" => "success", "history" => $history]);
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>

@@ -1,68 +1,61 @@
 <?php
+// admin_set_result.php - Admin đặt kết quả thủ công
+include 'config.db.php'; // Kết nối database
+
 session_start();
-require_once 'config.db.php';
 
-// Kiểm tra quyền admin
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    die(json_encode(["status" => "error", "message" => "Bạn không có quyền truy cập!"]));
+if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
+    die(json_encode(["status" => "error", "message" => "Bạn không có quyền truy cập."]));
 }
 
-// CSRF Token để bảo vệ form
-if (!isset($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+$admin_id = $_SESSION['admin_id'];
+
+// Lấy danh sách game
+$query_games = $conn->query("SELECT id, name FROM vote_games ORDER BY created_at DESC");
+$games = $query_games ? $query_games->fetch_all(MYSQLI_ASSOC) : [];
+
+
+// Xử lý POST request
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    die(json_encode([
+        "status" => "error",
+        "message" => "Phương thức không hợp lệ.",
+        "debug" => $_SERVER['REQUEST_METHOD']
+    ]));
 }
 
-// Lấy danh sách games
-$sql = "SELECT id, name FROM vote_games";
-$games = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
-
-// Xử lý khi admin gửi dữ liệu
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Content-Type: application/json'); // Fix lỗi AJAX
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        echo json_encode(["status" => "error", "message" => "CSRF Token không hợp lệ!"]);
-        exit();
-    }
-
-    $game_id = intval($_POST['game_id']);
-    $round_number = intval($_POST['round_number']);
-    $correct_choice = $_POST['correct_choice'];
-    $admin_id = $_SESSION['user_id'];
-
-    if (!in_array($correct_choice, ['A', 'B', 'C', 'D'])) {
-        echo json_encode(["status" => "error", "message" => "Lựa chọn không hợp lệ!"]);
-        exit();
-    }
-
-    // Kiểm tra xem kỳ quay này đã có kết quả chưa
-    $stmt = $conn->prepare("SELECT id FROM admin_controls WHERE game_id = ? AND round_number = ?");
-    $stmt->bind_param("ii", $game_id, $round_number);
-    $stmt->execute();
-    $existing = $stmt->get_result()->fetch_assoc();
-
-    if ($existing) {
-        echo json_encode(["status" => "error", "message" => "Kết quả đã tồn tại cho kỳ quay này!"]);
-        exit();
-    }
-
-    // Lưu kết quả vào database
-    $stmt = $conn->prepare("INSERT INTO admin_controls (game_id, round_number, correct_choice, admin_id) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("iisi", $game_id, $round_number, $correct_choice, $admin_id);
-    
-    if ($stmt->execute()) {
-        echo json_encode(["status" => "success", "message" => "Đã lưu kết quả thành công!"]);
-    } else {
-        echo json_encode(["status" => "error", "message" => "Lỗi khi lưu kết quả!"]);
-    }
-    exit();
+// Kiểm tra dữ liệu đầu vào
+if (empty($_POST)) {
+    die(json_encode([
+        "status" => "error",
+        "message" => "Dữ liệu không được gửi hoặc bị chặn.",
+        "debug" => $_POST
+    ]));
 }
 
-// Lấy danh sách lịch sử đặt kết quả
-$sql = "SELECT ac.id, ac.game_id, vg.name AS game_name, ac.round_number, ac.correct_choice, ac.created_at 
-        FROM admin_controls ac 
-        JOIN vote_games vg ON ac.game_id = vg.id 
-        ORDER BY ac.created_at DESC";
-$results = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
+// Kiểm tra nếu Admin đã đặt kết quả
+$check = $conn->prepare("SELECT id FROM admin_controls WHERE game_id = ? AND round_number = ?");
+$check->bind_param("ii", $_POST['game_id'], $_POST['round_number']);
+$check->execute();
+$res = $check->get_result();
+
+if ($res->num_rows > 0) {
+    die(json_encode(["status" => "error", "message" => "Kết quả đã tồn tại."]));
+}
+
+// Lưu kết quả vào bảng `admin_controls`
+$query = $conn->prepare("INSERT INTO admin_controls (game_id, round_number, correct_choice, admin_id, created_at) VALUES (?, ?, ?, ?, NOW())");
+$query->bind_param("iisi", $_POST['game_id'], $_POST['round_number'], $_POST['correct_choice'], $_SESSION['admin_id']);
+
+if ($query->execute()) {
+    echo json_encode(["status" => "success", "message" => "Kết quả đã được cập nhật."]);
+} else {
+    echo json_encode(["status" => "error", "message" => "Lỗi khi cập nhật kết quả: " . $query->error]);
+}
+
+// Lấy lịch sử kết quả để hiển thị
+$query_results = $conn->query("SELECT ac.id, vg.name AS game_name, ac.round_number, ac.correct_choice, ac.created_at FROM admin_controls ac JOIN vote_games vg ON ac.game_id = vg.id ORDER BY ac.created_at DESC");
+$results = $query_results ? $query_results->fetch_all(MYSQLI_ASSOC) : [];
 ?>
 
 <!DOCTYPE html>
@@ -78,13 +71,15 @@ $results = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
 <h2>Đặt Kết Quả Trước</h2>
 
 <form id="setResultForm">
-    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
-
     <label>Chọn Game:</label>
     <select name="game_id" id="game_id" required>
-        <?php foreach ($games as $game): ?>
-            <option value="<?= $game['id'] ?>"><?= htmlspecialchars($game['name']) ?></option>
-        <?php endforeach; ?>
+        <?php if (!empty($games)): ?>
+            <?php foreach ($games as $game): ?>
+                <option value="<?= htmlspecialchars($game['id']) ?>"><?= htmlspecialchars($game['name']) ?></option>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <option value="">Không có game nào</option>
+        <?php endif; ?>
     </select>
 
     <label>Kỳ Quay:</label>
@@ -110,44 +105,46 @@ $results = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
         <th>Kết Quả</th>
         <th>Ngày Tạo</th>
     </tr>
-    <?php foreach ($results as $result): ?>
-        <tr>
-            <td><?= $result['id'] ?></td>
-            <td><?= htmlspecialchars($result['game_name']) ?></td>
-            <td><?= $result['round_number'] ?></td>
-            <td><?= htmlspecialchars($result['correct_choice']) ?></td>
-            <td><?= $result['created_at'] ?></td>
-        </tr>
-    <?php endforeach; ?>
+    <?php if (!empty($results)): ?>
+        <?php foreach ($results as $result): ?>
+            <tr>
+                <td><?= $result['id'] ?></td>
+                <td><?= htmlspecialchars($result['game_name']) ?></td>
+                <td><?= $result['round_number'] ?></td>
+                <td><?= htmlspecialchars($result['correct_choice']) ?></td>
+                <td><?= $result['created_at'] ?></td>
+            </tr>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <tr><td colspan="5">Không có kết quả nào.</td></tr>
+    <?php endif; ?>
 </table>
 
 <script>
 $(document).ready(function() {
-    // Tự động lấy kỳ quay mới nhất khi chọn game
     $("#game_id").change(function() {
         let gameId = $(this).val();
-        
-        $.get("get_latest_round.php", { game_id: gameId }, function(response) {
-            if (response.latest_round) {
-                $("#round_number").val(response.latest_round);
-            } else {
-                console.error("Lỗi khi lấy kỳ quay:", response.error);
-            }
-        }, "json").fail(function() {
-            console.error("Lỗi kết nối đến server!");
-        });
+        if (gameId) {
+            $.get("get_latest_round.php", { game_id: gameId }, function(response) {
+                if (response.latest_round) {
+                    $("#round_number").val(response.latest_round);
+                } else {
+                    console.error("Lỗi khi lấy kỳ quay:", response.error);
+                }
+            }, "json").fail(function() {
+                console.error("Lỗi kết nối đến server!");
+            });
+        }
     });
 
-    // Khi trang load, cập nhật kỳ quay cho game đầu tiên
     $("#game_id").trigger("change");
 
-    // Gửi form qua AJAX
     $("#setResultForm").submit(function(e) {
         e.preventDefault();
 
         $.ajax({
             type: "POST",
-            url: "admin_set_results.php",
+            url: "admin_set_result.php",
             data: $(this).serialize(),
             dataType: "json",
             success: function(response) {
